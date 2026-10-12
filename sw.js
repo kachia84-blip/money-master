@@ -1,6 +1,6 @@
 'use strict';
-const CACHE = 'money-master-v1';
-const SHELL = ['./', './index.html', './app.js', './style.css', './manifest.json', './icon.svg', './data/sample.json'];
+const CACHE = 'money-master-v2';
+const SHELL = ['./', './index.html', './app.js', './style.css', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png', './data/sample.json'];
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting()));
 });
