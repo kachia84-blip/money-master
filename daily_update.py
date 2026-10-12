@@ -9,7 +9,7 @@ NEW = HERE / "data" / "new.json"
 LOG = HERE / "update.log"
 DELEGATE = r"C:/Users/kachi/.claude/skills/delegate/delegate.py"
 CATS = {"world", "tax", "asset", "policy", "mindset"}
-KEYS = "id category country title summary insight apply caution date level sources".split()
+KEYS = "id category country title summary insight apply caution date level sources oneliner who when background example facts steps".split()
 MAX_ITEMS = 300
 FRESH_DAYS = 60
 TODAY = datetime.date.today().isoformat()
@@ -19,7 +19,7 @@ def log(m):
         f.write(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {m}\n")
 
 def valid(x, seen):
-    if not all(x.get(k) for k in KEYS): return False
+    if not all(x.get(k) for k in KEYS) or len(x["facts"]) < 3 or len(x["steps"]) < 2: return False
     if x["category"] not in CATS or x["id"] in seen or x["level"] not in (1, 2, 3): return False
     try:
         age = (datetime.date.today() - datetime.date.fromisoformat(x["date"])).days
@@ -31,7 +31,7 @@ def valid(x, seen):
         if not u.startswith("https://") or "vertexaisearch" in u or "google.com/search" in u: return False
     return True
 
-def run(count=3, seed=False):
+def run(count=6, seed=False):
     d = json.loads(DATA.read_text(encoding="utf-8"))
     if seed:  # 낡은 항목 정리: 90일 넘은 것은 피드에서 뺌
         cut = (datetime.date.today() - datetime.timedelta(days=90)).isoformat()
@@ -40,7 +40,7 @@ def run(count=3, seed=False):
     recent = [x["title"] for x in sorted(d["items"], key=lambda x: x["date"], reverse=True)[:25]]
     NEW.unlink(missing_ok=True)
     prompt = (
-        f"SPEC.md를 읽어라. 오늘은 {TODAY}. 웹 검색 스니펫(read_url·셸 금지)으로 최근 {FRESH_DAYS}일 안에 보도·발표된(date는 기사 발행일, 1월 1일 같은 시행일 금지) 돈 관련 새 소식 중 "
+        f"SPEC.md(특히 '정보 깊이' 섹션의 facts·who·when·steps·background·example·oneliner 필드까지 전부)를 읽어라. 오늘은 {TODAY}. 웹 검색 스니펫(read_url·셸 금지)으로 최근 {FRESH_DAYS}일 안에 보도·발표된(date는 기사 발행일, 1월 1일 같은 시행일 금지) 돈 관련 새 소식 중 "
         f"한국 직장인에게 의미 있는 것 {count}개를 골라 SPEC 스키마의 항목 배열(JSON 배열만)을 data/new.json에 써라. "
         "카테고리는 tax/policy/asset/world/mindset 중 다양하게(world는 한국에 올 수 있는 것만). "
         "종목·코인 추천 금지. sources.url은 실제 발행처 정식 주소(구글 중계 주소 금지). 지어낸 숫자 금지, 불확실하면 caution에 '확인 필요'. "

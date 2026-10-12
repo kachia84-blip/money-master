@@ -73,6 +73,22 @@ function validItem(item) {
     && /^\d{4}-\d{2}-\d{2}$/.test(item.date) && Array.isArray(item.sources) && item.sources.length > 0
     && item.sources.every((source) => source && typeof source.name === 'string' && safeURL(source.url));
 }
+function hasText(value) {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+function itemFacts(item) {
+  return Array.isArray(item.facts) ? item.facts.filter((fact) => fact && hasText(fact.label) && hasText(fact.value)) : [];
+}
+function factList(facts, compact = false) {
+  const list = element('dl', compact ? 'fact-chips' : 'fact-table');
+  if (compact) list.setAttribute('aria-label', '핵심 숫자 미리보기');
+  for (const fact of facts) {
+    const row = element('div', 'fact-row');
+    row.append(element('dt', '', fact.label), element('dd', '', fact.value));
+    list.append(row);
+  }
+  return list;
+}
 function makeCard(item, featured = false) {
   const card = element('article', `card${featured ? ' featured' : ''}`);
   const top = element('div', 'card-top');
@@ -94,12 +110,25 @@ function makeCard(item, featured = false) {
   top.append(star); card.append(top);
   const details = element('details');
   const summary = element('summary');
-  summary.append(element('h3', '', item.title), element('p', 'preview', item.summary), element('span', 'meta', `${item.date} · ${levels[item.level]} · 펼쳐 읽기`));
+  const facts = itemFacts(item);
+  const preview = hasText(item.oneliner) ? item.oneliner : item.summary.slice(0, 100) + (item.summary.length > 100 ? '…' : '');
+  summary.append(element('h3', '', item.title), element('p', 'preview', preview));
+  if (facts.length) summary.append(factList(facts.slice(0, 2), true));
+  summary.append(element('span', 'meta', `${item.date} · ${levels[item.level]} · 펼쳐 읽기`));
   details.append(summary);
   const body = element('div', 'detail-body');
-  for (const [key, title] of [['insight', '한 차원 높은 시각'], ['apply', '내 생활에 적용하기'], ['caution', '확인할 점']]) {
+  for (const [key, title] of [['summary', '요약'], ['facts', '핵심 숫자'], ['who', '누가 해당되나'], ['when', '언제'], ['steps', '이렇게 하세요'], ['example', '예시'], ['background', '배경'], ['insight', '한 차원 높은 시각'], ['apply', '내게 적용'], ['caution', '주의']]) {
+    const steps = key === 'steps' && Array.isArray(item.steps) ? item.steps.filter(hasText) : [];
+    if (key === 'facts' ? !facts.length : key === 'steps' ? !steps.length : !hasText(item[key])) continue;
     const section = element('section', key);
-    section.append(element('h4', '', title), element('p', '', item[key])); body.append(section);
+    section.append(element('h4', '', title));
+    if (key === 'facts') section.append(factList(facts));
+    else if (key === 'steps') {
+      const list = element('ol', 'steps-list');
+      steps.forEach((step) => list.append(element('li', '', step)));
+      section.append(list);
+    } else section.append(element('p', '', item[key]));
+    body.append(section);
   }
   const sources = element('section', 'sources'); sources.append(element('h4', '', '출처'));
   const links = element('ul');
