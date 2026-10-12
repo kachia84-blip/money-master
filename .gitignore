@@ -1,0 +1,6 @@
+*.bak
+__pycache__/
+update.log
+data/new.json
+data/sample.json
+_*
