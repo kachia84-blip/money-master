@@ -10,6 +10,44 @@ try {
   if (Array.isArray(stored)) saved = new Set(stored.filter((id) => typeof id === 'string'));
 } catch { storageAvailable = false; }
 
+function updateSavedBadge() {
+  $('saved-badge').textContent = String(saved.size);
+  $('saved-badge').hidden = saved.size === 0;
+  document.querySelector('[data-view="saved"]').setAttribute('aria-label', `저장, ${saved.size}개`);
+}
+updateSavedBadge();
+
+let installPrompt = null, appInstalled = false;
+const standaloneMode = window.matchMedia('(display-mode: standalone)');
+function updateInstallButton() {
+  const installed = appInstalled || standaloneMode.matches || navigator.standalone === true;
+  $('install-button').hidden = installed;
+  $('install-button').textContent = installPrompt ? '앱 설치' : '설치 방법';
+  if (installed && $('install-sheet').open) $('install-sheet').close();
+}
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault(); installPrompt = event; updateInstallButton();
+});
+window.addEventListener('appinstalled', () => {
+  appInstalled = true; installPrompt = null; updateInstallButton();
+});
+standaloneMode.addEventListener('change', updateInstallButton);
+$('install-button').addEventListener('click', async () => {
+  if (!installPrompt) { $('install-sheet').showModal(); return; }
+  const prompt = installPrompt;
+  installPrompt = null;
+  $('install-button').disabled = true;
+  try { await prompt.prompt(); await prompt.userChoice; }
+  catch { if (!appInstalled && !standaloneMode.matches) $('install-sheet').showModal(); }
+  finally { $('install-button').disabled = false; updateInstallButton(); }
+});
+$('install-sheet').addEventListener('click', (event) => {
+  if (event.target !== $('install-sheet')) return;
+  const rect = $('install-sheet').getBoundingClientRect();
+  if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) $('install-sheet').close();
+});
+updateInstallButton();
+
 const regionNames = typeof Intl.DisplayNames === 'function' ? new Intl.DisplayNames(['ko'], { type: 'region' }) : null;
 function countryLabel(value) {
   return value.split(',').map((part) => {
@@ -50,6 +88,7 @@ function makeCard(item, featured = false) {
       const active = saved.has(button.dataset.save);
       button.textContent = active ? '★' : '☆'; button.setAttribute('aria-pressed', String(active));
     });
+    updateSavedBadge();
     if (view === 'saved') render();
   });
   top.append(star); card.append(top);
