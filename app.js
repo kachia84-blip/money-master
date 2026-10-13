@@ -175,22 +175,28 @@ Object.entries(CATEGORIES).forEach(([key, label]) => {
   button.addEventListener('click', () => { if (category !== key) authorFilter = ''; category = key; syncChips(); renderFeed(); }); $('categories').append(button);
 });
 // 피드를 좌우로 밀면 분류가 옆 칸으로 이동 (칩 줄·상세 시트·검색창에서 시작한 터치는 제외)
+// 안드로이드가 터치를 스크롤로 가로채 touchcancel이 와도 마지막 위치로 판정한다.
 (() => {
-  const keys = Object.keys(CATEGORIES); let sx = null, sy = 0;
-  document.addEventListener('touchstart', (event) => {
-    if (event.touches.length !== 1 || event.target.closest('#categories, #authors, #detail-sheet, input')) { sx = null; return; }
-    sx = event.touches[0].clientX; sy = event.touches[0].clientY;
-  }, { passive: true });
-  document.addEventListener('touchend', (event) => {
-    if (sx === null) return;
-    const touch = event.changedTouches[0], dx = touch.clientX - sx, dy = touch.clientY - sy; sx = null;
-    if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.6) return;
+  const keys = Object.keys(CATEGORIES); let sx = null, sy = 0, lx = 0, ly = 0, done = false;
+  const go = () => {
+    if (sx === null || done) return; done = true;
+    const dx = lx - sx, dy = ly - sy; sx = null;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.3) return;
     const next = keys.indexOf(category) + (dx < 0 ? 1 : -1);
     if (next < 0 || next >= keys.length) return;
     authorFilter = ''; category = keys[next]; syncChips(); renderFeed();
     document.querySelector(`[data-category="${category}"]`)?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
     $('feed').animate([{ opacity: 0.4, transform: `translateX(${dx < 0 ? 24 : -24}px)` }, { opacity: 1, transform: 'none' }], { duration: 180, easing: 'ease-out' });
+  };
+  document.addEventListener('touchstart', (event) => {
+    if (event.touches.length !== 1 || event.target.closest('#categories, #authors, #detail-sheet, input')) { sx = null; return; }
+    sx = lx = event.touches[0].clientX; sy = ly = event.touches[0].clientY; done = false;
   }, { passive: true });
+  document.addEventListener('touchmove', (event) => {
+    if (sx === null) return; lx = event.touches[0].clientX; ly = event.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', (event) => { if (sx !== null) { lx = event.changedTouches[0].clientX; ly = event.changedTouches[0].clientY; } go(); }, { passive: true });
+  document.addEventListener('touchcancel', go, { passive: true });
 })();
 function section(title, value, className = '') {
   const text = textValue(value); if (!text) return null;
@@ -358,5 +364,7 @@ async function loadData() {
 }
 syncSaved(); syncInstall(); loadData();
 if ('serviceWorker' in navigator && ['https:', 'http:'].includes(location.protocol)) {
+  const hadController = !!navigator.serviceWorker.controller; let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController && !reloaded) { reloaded = true; location.reload(); } });
   navigator.serviceWorker.register('./sw.js').catch(() => { /* The feed works without installation. */ });
 }
