@@ -1,12 +1,13 @@
 'use strict';
 const $ = (id) => document.getElementById(id);
-const CATEGORIES = { all: '전체', tax: '절세', world: '해외제도', asset: '새자산', policy: '정책', mindset: '원리' };
+const CATEGORIES = { all: '전체', essay: '에세이', tax: '절세', policy: '정책', asset: '새자산', mindset: '원리' };
 const STORAGE_KEY = 'money-master-saved';
 const DATA_URL = new URL('./data/insights.json', location.href).href;
-const CACHE_NAME = 'money-master-v5';
+const CACHE_NAME = 'money-master-v6';
 const DISCLAIMER = '교육·정보 목적이며 투자·세무 자문이 아닙니다. 세법은 수시로 바뀌니 시행 전 국세청·전문가로 확인하세요.';
 let items = [], category = 'all', savedOnly = false, currentItem = null, installPrompt = null;
 let saved = new Set(), triggerElement = null, touchStart = null;
+let authorFilter = '';
 // A reload starts on the feed, without leaving a stale detail history entry.
 if (history.state?.moneyMasterDetail) {
   const state = { ...history.state }; delete state.moneyMasterDetail;
@@ -38,6 +39,13 @@ function textValue(value) {
 function categoryName(item) { return CATEGORIES[item.category] || '돈 이야기'; }
 function sourceName(item) {
   return textValue(item.source) || (Array.isArray(item.sources) && textValue(item.sources[0]?.name)) || '돈의 달인';
+}
+function authorName(item) { return textValue(item.author) || '필자 미상'; }
+function essayByline(item) { const a = authorName(item), s = sourceName(item); return s && !a.includes(s) && !s.includes(a) ? `${a} · ${s}` : a; }
+function displayTitle(item) { return item.category === 'essay' ? textValue(item.title_ko) || item.title : item.title; }
+function authorInitials(item) {
+  const words = authorName(item).split(/\s+/);
+  return (words.length > 1 ? words[0][0] + words[words.length - 1][0] : Array.from(words[0]).slice(0, 2).join('')).toLocaleUpperCase();
 }
 function dateObject(value) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return null;
@@ -79,28 +87,36 @@ function toggleSave(item) {
   syncSaved();
 }
 function makeRow(item) {
+  const essay = item.category === 'essay';
+  const title = displayTitle(item);
   const imageURL = safeURL(item.image);
-  const row = el('article', `feed-row${imageURL ? ' has-image' : ''}`);
+  const row = el('article', `feed-row${imageURL ? ' has-image' : ''}${essay ? ' essay-row' : ''}`);
   const open = el('button', 'article-open'); open.type = 'button';
-  open.setAttribute('aria-label', `${item.title}, 상세 보기`);
+  open.setAttribute('aria-label', `${title}, 상세 보기`);
   const meta = el('span', 'article-meta');
-  meta.append(el('span', 'article-source', sourceName(item)), el('span', '', '·'), el('span', '', dateLabel(item.date)), el('span', '', '·'), el('span', 'category-label', categoryName(item)));
-  open.append(meta, el('h3', 'article-title', item.title));
+  meta.append(el('span', 'article-source', essay ? essayByline(item) : sourceName(item)), el('span', '', '·'), el('span', '', dateLabel(item.date)), el('span', '', '·'), el('span', 'category-label', categoryName(item)));
+  open.append(meta, el('h3', 'article-title', title));
+  if (essay) open.append(el('span', 'article-original-title', item.title));
   if (textValue(item.oneliner)) {
     const line = el('span', 'article-oneliner');
-    line.append(el('b', '', '돈 인사이트'), document.createTextNode(textValue(item.oneliner)));
+    line.append(el('b', '', essay ? '핵심 주장' : '돈 인사이트'), document.createTextNode(essay ? `“${textValue(item.oneliner)}”` : textValue(item.oneliner)));
     open.append(line);
   }
   open.addEventListener('click', () => openDetail(item, open));
   const side = el('div', 'row-side');
+  const avatar = () => {
+    const button = el('button', 'author-avatar', authorInitials(item)); button.type = 'button';
+    button.setAttribute('aria-label', `${authorName(item)}, ${title}, 상세 보기`);
+    button.addEventListener('click', () => openDetail(item, button)); return button;
+  };
   if (imageURL) {
     const thumbButton = el('button', 'thumbnail-button'); thumbButton.type = 'button';
-    thumbButton.setAttribute('aria-label', `${item.title}, 상세 보기`);
+    thumbButton.setAttribute('aria-label', `${title}, 상세 보기`);
     const img = el('img', 'thumbnail'); img.src = imageURL; img.alt = ''; img.loading = 'lazy'; img.referrerPolicy = 'no-referrer';
-    img.addEventListener('error', () => { thumbButton.remove(); row.classList.remove('has-image'); }, { once: true });
+    img.addEventListener('error', () => { if (essay) thumbButton.replaceWith(avatar()); else thumbButton.remove(); row.classList.remove('has-image'); }, { once: true });
     thumbButton.append(img); thumbButton.addEventListener('click', () => openDetail(item, thumbButton)); side.append(thumbButton);
-  }
-  const star = el('button', 'save-button'); star.type = 'button'; star.dataset.save = item.id; star.dataset.title = item.title;
+  } else if (essay) side.append(avatar());
+  const star = el('button', 'save-button'); star.type = 'button'; star.dataset.save = item.id; star.dataset.title = title;
   star.addEventListener('click', () => toggleSave(item)); side.append(star);
   row.append(open, side);
   row.addEventListener('click', (event) => {
@@ -109,10 +125,12 @@ function makeRow(item) {
   return row;
 }
 function renderFeed() {
+  syncAuthorChips();
   const query = $('query').value.trim().toLocaleLowerCase('ko');
-  const visible = items.filter((item) => (category === 'all' || category === item.category)
+  const visible = items.filter((item) => item.category !== 'world' && (category === 'all' || category === item.category)
+    && (category !== 'essay' || !authorFilter || authorName(item) === authorFilter)
     && (!savedOnly || saved.has(item.id))
-    && (!query || [item.title, item.oneliner, item.summary].map(textValue).join(' ').toLocaleLowerCase('ko').includes(query)));
+    && (!query || [item.title, item.title_ko, item.author, item.oneliner, item.summary].map(textValue).join(' ').toLocaleLowerCase('ko').includes(query)));
   $('feed-label').textContent = `${savedOnly ? '저장한 기사' : '전체 기사'}${category !== 'all' ? ` · ${CATEGORIES[category]}` : ''}${query ? ' · 검색 결과' : ''}`;
   $('count').textContent = `${visible.length}개 · 최신순`;
   const fragment = document.createDocumentFragment();
@@ -126,7 +144,7 @@ function renderFeed() {
     empty.append(el('p', '', savedOnly ? '저장한 기사가 없습니다.' : '표시할 기사가 없습니다.'), el('p', '', savedOnly ? '기사 옆 ☆을 눌러 나중에 읽어보세요.' : '검색어나 카테고리를 바꿔보세요.'));
     if (category !== 'all' || query || savedOnly) {
       const reset = el('button', '', '전체 기사 보기'); reset.type = 'button';
-      reset.addEventListener('click', () => { category = 'all'; savedOnly = false; $('query').value = ''; syncChips(); renderFeed(); }); empty.append(reset);
+      reset.addEventListener('click', () => { category = 'all'; authorFilter = ''; savedOnly = false; $('query').value = ''; syncChips(); renderFeed(); }); empty.append(reset);
     }
     fragment.append(empty);
   }
@@ -135,11 +153,45 @@ function renderFeed() {
 function syncChips() {
   document.querySelectorAll('[data-category]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.category === category)));
 }
+function syncAuthorChips() {
+  const bar = $('authors'); bar.hidden = category !== 'essay';
+  if (bar.hidden) return;
+  const names = [...new Set(items.filter((item) => item.category === 'essay').map(authorName))];
+  if (authorFilter && !names.includes(authorFilter)) authorFilter = '';
+  const labels = ['전체 필자', ...names];
+  const values = ['', ...names];
+  // Keep focused chips and the horizontal scroll position while filtering.
+  if (bar.children.length !== labels.length || values.some((value, index) => bar.children[index]?.dataset.author !== value)) {
+    bar.replaceChildren(...labels.map((label, index) => {
+      const button = el('button', 'chip author-chip', label); button.type = 'button'; button.dataset.author = values[index];
+      button.addEventListener('click', () => { authorFilter = button.dataset.author; renderFeed(); }); return button;
+    }));
+  }
+  [...bar.children].forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.author === authorFilter)));
+}
 Object.entries(CATEGORIES).forEach(([key, label]) => {
   const button = el('button', 'chip', label); button.type = 'button'; button.dataset.category = key;
   button.setAttribute('aria-pressed', String(key === category));
-  button.addEventListener('click', () => { category = key; syncChips(); renderFeed(); }); $('categories').append(button);
+  button.addEventListener('click', () => { if (category !== key) authorFilter = ''; category = key; syncChips(); renderFeed(); }); $('categories').append(button);
 });
+// 피드를 좌우로 밀면 분류가 옆 칸으로 이동 (칩 줄·상세 시트·검색창에서 시작한 터치는 제외)
+(() => {
+  const keys = Object.keys(CATEGORIES); let sx = null, sy = 0;
+  document.addEventListener('touchstart', (event) => {
+    if (event.touches.length !== 1 || event.target.closest('#categories, #authors, #detail-sheet, input')) { sx = null; return; }
+    sx = event.touches[0].clientX; sy = event.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', (event) => {
+    if (sx === null) return;
+    const touch = event.changedTouches[0], dx = touch.clientX - sx, dy = touch.clientY - sy; sx = null;
+    if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.6) return;
+    const next = keys.indexOf(category) + (dx < 0 ? 1 : -1);
+    if (next < 0 || next >= keys.length) return;
+    authorFilter = ''; category = keys[next]; syncChips(); renderFeed();
+    document.querySelector(`[data-category="${category}"]`)?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+    $('feed').animate([{ opacity: 0.4, transform: `translateX(${dx < 0 ? 24 : -24}px)` }, { opacity: 1, transform: 'none' }], { duration: 180, easing: 'ease-out' });
+  }, { passive: true });
+})();
 function section(title, value, className = '') {
   const text = textValue(value); if (!text) return null;
   const block = el('section', `detail-section ${className}`); block.append(el('h2', '', title), el('p', '', text)); return block;
@@ -149,15 +201,27 @@ function externalLink(label, url, className = '') {
   const link = el('a', className, label); link.href = href; link.target = '_blank'; link.rel = 'noopener noreferrer'; return link;
 }
 function populateDetail(item) {
+  const essay = item.category === 'essay';
   const content = $('detail-content'); content.replaceChildren();
   content.append(el('div', 'detail-kicker', categoryName(item)));
-  const title = el('h1', '', item.title); title.id = 'detail-title'; content.append(title);
-  content.append(el('p', 'detail-meta', `${sourceName(item)} · ${item.date || '날짜 미상'}`));
-  const original = externalLink('원문 기사 보기 ↗', item.url, 'primary-button'); if (original) content.append(original);
+  const title = el('h1', '', displayTitle(item)); title.id = 'detail-title'; content.append(title);
+  if (essay) content.append(el('p', 'detail-original-title', item.title));
+  content.append(el('p', 'detail-meta', `${essay ? essayByline(item) : sourceName(item)} · ${item.date || '날짜 미상'}`));
+  const original = externalLink(essay ? '원문 읽기 (영어)' : '원문 기사 보기 ↗', item.url, 'primary-button'); if (original) content.append(original);
   const appendSection = (name, value, className) => { const block = section(name, value, className); if (block) content.append(block); };
-  appendSection('한 줄 인사이트', item.oneliner, 'insight-section');
+  appendSection(essay ? '핵심 주장' : '한 줄 인사이트', item.oneliner, 'insight-section');
   appendSection('무슨 일인가', item.summary);
-  if (Array.isArray(item.facts) && item.facts.some((fact) => fact && (textValue(fact.label) || textValue(fact.value)))) {
+  if (essay) {
+    const ideas = (Array.isArray(item.facts) ? item.facts : [item.facts]).map((fact) => {
+      if (!fact) return '';
+      return textValue(fact) || [textValue(fact.label), textValue(fact.value)].filter(Boolean).join(': ');
+    }).filter(Boolean);
+    if (ideas.length) {
+      const block = el('section', 'detail-section'); block.append(el('h2', '', '핵심 아이디어'));
+      const list = el('ol', 'ideas-list'); ideas.forEach((idea) => list.append(el('li', '', idea)));
+      block.append(list); content.append(block);
+    }
+  } else if (Array.isArray(item.facts) && item.facts.some((fact) => fact && (textValue(fact.label) || textValue(fact.value)))) {
     const block = el('section', 'detail-section'); block.append(el('h2', '', '핵심 숫자'));
     const table = el('table', 'facts-table'); const body = el('tbody');
     item.facts.forEach((fact) => {
@@ -166,17 +230,17 @@ function populateDetail(item) {
       row.append(label, el('td', '', textValue(fact.value))); body.append(row);
     }); table.append(body); block.append(table); content.append(block);
   }
-  appendSection('나에게 해당되나', item.who);
-  appendSection('언제', item.when);
+  appendSection(essay ? '이런 분께 도움이 돼요' : '나에게 해당되나', item.who);
+  appendSection(essay ? '필자·원문' : '언제', essay ? item.when || essayByline(item) : item.when);
   const steps = Array.isArray(item.steps) ? item.steps.map(textValue).filter(Boolean) : [];
   if (steps.length) {
-    const block = el('section', 'detail-section steps-section'); block.append(el('h2', '', '이렇게 하세요'));
+    const block = el('section', 'detail-section steps-section'); block.append(el('h2', '', essay ? '곱씹어 볼 질문·행동' : '이렇게 하세요'));
     const list = el('ol', 'steps-list'); steps.forEach((step) => list.append(el('li', '', step.replace(/^\s*\d+\s*(?:단계\s*[:：.]|[.)])\s*/, ''))));
     block.append(list); content.append(block);
-  } else appendSection('이렇게 하세요', item.apply, 'steps-section');
-  appendSection('숫자 예시', item.example, 'example-section');
+  } else appendSection(essay ? '곱씹어 볼 질문·행동' : '이렇게 하세요', essay ? item.steps || item.apply : item.apply, 'steps-section');
+  appendSection(essay ? '글 속 대표 사례' : '숫자 예시', item.example, 'example-section');
   appendSection('한 차원 높은 시각', item.insight);
-  appendSection('주의', item.caution, 'caution-section');
+  appendSection(essay ? '읽을 때 주의' : '주의', item.caution, 'caution-section');
   if (Array.isArray(item.sources)) {
     const links = item.sources.map((source) => source && externalLink(textValue(source.name) || '출처 보기 ↗', source.url)).filter(Boolean);
     if (links.length) {

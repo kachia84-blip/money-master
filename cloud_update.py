@@ -7,9 +7,9 @@ MODEL = os.environ.get("GEMINI_MODEL", "gemini-flash-latest")
 
 def api_pick(n, chunk):
     cands = [{"idx": i, **{k: c[k] for k in ("title", "source", "date", "snippet")}} for i, c in enumerate(chunk)]
-    prompt = du.PROMPT.format(n=n, size=len(chunk), today=du.TODAY, pick=du.PICK)
+    prompt = du.prompt_for(n, chunk)
     prompt = (prompt.replace(f"data/cand_{n}.json에는", "아래 후보 JSON에는").replace(f"data/pick_{n}.json에 JSON 배열로 써라", "JSON 배열만 출력하라(설명·코드펜스 없이)")
-              .replace("파일 도구와 웹 검색만 쓰고 read_url·셸 금지.", "웹 검색을 쓸 수 있다.").replace("끝나면 한 줄 보고.", "")
+              .replace("파일 도구와 웹 검색만 쓰고 read_url·셸 금지.", "웹 검색을 쓸 수 있다.").replace("파일 도구만 쓰고 read_url·셸 금지.", "").replace("끝나면 한 줄 보고.", "")
               + "\n\n후보 JSON:\n" + json.dumps(cands, ensure_ascii=False))
     body = json.dumps({"contents": [{"parts": [{"text": prompt}]}], "tools": [{"google_search": {}}], "generationConfig": {"temperature": 0.4}}).encode()
     for attempt in range(3):

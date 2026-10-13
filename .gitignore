@@ -7,3 +7,4 @@ _*
 data/candidates.json
 data/cand_*.json
 data/pick_*.json
+data/essay_candidates.json

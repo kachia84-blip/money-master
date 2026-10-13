@@ -9,16 +9,10 @@ OUT = Path(__file__).parent / "data" / "candidates.json"
 QUERIES = [
     ("절세 새로 도입 제도", "ko-KR", "tax"), ("세법개정안 공제 신설", "ko-KR", "tax"), ("연금 개편 퇴직연금 IRP ISA 개선", "ko-KR", "tax"),
     ("상속세 증여세 개편", "ko-KR", "tax"), ("토큰증권 조각투자 신상품", "ko-KR", "asset"), ("스테이블코인 디지털자산 법안", "ko-KR", "asset"),
-    ("금융당국 신상품 출시 계좌", "ko-KR", "policy"), ("해외 연금 제도 개혁 도입", "ko-KR", "world"), ("부자들 자산 관리 방식 달라졌다", "ko-KR", "mindset"),
-    ("new tax-free savings account government launch", "en-US", "world"), ("pension reform new retirement scheme country", "en-US", "world"),
-    ("tokenized assets real world assets launch regulation", "en-US", "asset"), ("new tax law loophole deduction change 2026", "en-US", "tax"),
-    ("sovereign wealth fund citizens dividend baby bonds", "en-US", "world"), ("wealth tax inheritance tax reform country", "en-US", "world"),
+    ("금융당국 신상품 출시 계좌", "ko-KR", "policy"), ("부자들 자산 관리 방식 달라졌다", "ko-KR", "mindset"), ("재테크 습관 돈 모으는 원리 전문가", "ko-KR", "mindset"), ("자산가 포트폴리오 배분 노후 준비 전략", "ko-KR", "mindset"),
     ("연금저축 IRP 세액공제 방법", "ko-KR", "tax"), ("해외주식 양도세 절세 방법", "ko-KR", "tax"), ("청년 주택 청약 저축 혜택 신설", "ko-KR", "policy"),
     ("금융위원회 발표 가상자산 ETF 허용", "ko-KR", "asset"), ("국세청 세무조사 신고 안내 달라지는", "ko-KR", "tax"), ("달라지는 제도 내달부터 시행 금융", "ko-KR", "policy"),
-    ("싱가포르 일본 영국 연금 ISA 제도", "ko-KR", "world"), ("부동산 세금 양도세 종부세 개편", "ko-KR", "tax"), ("건강보험료 국민연금 개편 직장인", "ko-KR", "policy"),
-    ("ISA account UK Japan NISA changes", "en-US", "world"), ("Singapore CPF retirement new scheme", "en-US", "world"), ("tokenized treasury fund bonds launch bank", "en-US", "asset"),
-    ("estate planning tax strategy new rules billionaires", "en-US", "mindset"), ("digital euro CBDC launch date", "en-US", "asset"),
-    ("stablecoin law central bank digital currency new rules", "en-US", "asset"), ("how the wealthy use trust family office strategy", "en-US", "mindset"),
+    ("부동산 세금 양도세 종부세 개편", "ko-KR", "tax"), ("건강보험료 국민연금 개편 직장인", "ko-KR", "policy"),
 ]
 DAYS = 21
 
