@@ -1,0 +1,32 @@
+name: update
+on:
+  schedule:
+    - cron: "23 */3 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: update
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: collect and write insights
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python cloud_update.py
+      - name: commit
+        run: |
+          git config user.name "money-master-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/insights.json
+          git diff --cached --quiet && echo "no changes" && exit 0
+          git commit -m "auto update $(date -u +%F-%H)"
+          git pull --rebase -q origin main || true
+          git push origin main

@@ -4,3 +4,6 @@ update.log
 data/new.json
 data/sample.json
 _*
+data/candidates.json
+data/cand_*.json
+data/pick_*.json
