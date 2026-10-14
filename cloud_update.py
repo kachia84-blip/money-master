@@ -30,6 +30,7 @@ def api_pick(n, chunk):
                 detail = e.read().decode("utf-8", "replace").replace(chr(10), " ")[:220]
                 du.log(f"chunk {n} {model} HTTP {e.code}: {detail}")
                 if e.code in (400, 403, 404): break  # 모델/권한 문제 → 다음 모델
+                if e.code == 503: break  # 모델이 바쁨 → 재시도 없이 다음 모델
                 time.sleep(25)
             except Exception as e:
                 du.log(f"chunk {n} {model} 실패: {repr(e)[:150]}"); time.sleep(10)
