@@ -10,3 +10,15 @@
 2026-10-14 15:12:28 chunk 2 API 시도2 실패: <HTTPError 429: 'Too Many Requests'>
 2026-10-14 15:13:08 chunk 2 API 시도3 실패: <HTTPError 429: 'Too Many Requests'>
 2026-10-14 15:14:08 추가 0건 → 변경 없음
+2026-10-14 15:19:04 서버 실행 시작 모델=gemini-flash-latest
+2026-10-14 15:19:16 새 후보 뉴스 20건·에세이 30건, 묶음 3개
+2026-10-14 15:19:17 chunk 0 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-10-14 15:19:42 chunk 0 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-10-14 15:20:28 chunk 0 성공 모델=gemini-flash-lite-latest 12개
+2026-10-14 15:20:29 chunk 1 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-10-14 15:20:55 chunk 1 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-10-14 15:21:41 chunk 1 성공 모델=gemini-flash-lite-latest 9개
+2026-10-14 15:21:42 chunk 2 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-10-14 15:22:07 chunk 2 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-10-14 15:22:44 chunk 2 성공 모델=gemini-flash-lite-latest 5개
+2026-10-14 15:22:45 26개 추가, 총 186개
