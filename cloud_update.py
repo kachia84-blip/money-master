@@ -1,6 +1,9 @@
 """GitHub Actions용: PC 없이 갱신. Gemini API(키는 환경변수 GEMINI_API_KEY)로 뉴스 후보를 고르고 해설을 쓴다. push는 워크플로가 한다."""
 import json, os, re, sys, time, urllib.request
 import daily_update as du
+from pathlib import Path
+du.LOG = Path(__file__).parent / "data" / "last_run.log"  # 서버 실행 기록(저장소에 커밋되어 원인 확인 가능)
+import socket; socket.setdefaulttimeout(30)
 
 KEY = os.environ.get("GEMINI_API_KEY", "")
 MODEL = os.environ.get("GEMINI_MODEL", "gemini-flash-latest")
@@ -25,5 +28,9 @@ def api_pick(n, chunk):
 
 if __name__ == "__main__":
     if not KEY:
-        print("GEMINI_API_KEY 없음"); sys.exit(0)
-    du.run(api_pick, workers=1)
+        du.log("GEMINI_API_KEY 환경변수가 비어 있음(비밀값 이름/등록 확인 필요)"); print("GEMINI_API_KEY 없음"); sys.exit(0)
+    du.log(f"서버 실행 시작 모델={MODEL}")
+    try:
+        du.run(api_pick, workers=1)
+    except Exception as e:
+        du.log("오류: " + repr(e)[:300])

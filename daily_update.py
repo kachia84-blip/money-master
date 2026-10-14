@@ -1,6 +1,6 @@
 """매일 갱신: 뉴스 수집(fetch_news) → Gemini가 후보에서 골라 해설 작성(병렬) → 검증·병합 → GitHub push.
 실행: pythonw daily_update.py  (로그 update.log). 기사 URL·날짜·언론사·사진은 수집기 값을 그대로 쓴다(AI가 못 바꿈)."""
-import json, subprocess, sys, datetime, hashlib, traceback, concurrent.futures as cf
+import socket, json, subprocess, sys, datetime, hashlib, traceback, concurrent.futures as cf
 from pathlib import Path
 import fetch_news, fetch_essays
 
@@ -14,6 +14,7 @@ CATS = {"tax", "asset", "policy", "mindset", "essay"}
 MAX_ITEMS, KEEP_DAYS, ESSAY_KEEP_DAYS, CHUNK, PICK = 600, 60, 365, 35, 12
 E_CHUNK, E_PICK = 25, 9
 TODAY = datetime.date.today().isoformat()
+socket.setdefaulttimeout(30)
 
 def log(m):
     with LOG.open("a", encoding="utf-8") as f:
