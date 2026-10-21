@@ -5,7 +5,7 @@ const STORAGE_KEY = 'money-master-saved';
 const DATA_URL = new URL('./data/insights.json', location.href).href;
 const CACHE_NAME = 'money-master-v6';
 const DISCLAIMER = '교육·정보 목적이며 투자·세무 자문이 아닙니다. 세법은 수시로 바뀌니 시행 전 국세청·전문가로 확인하세요.';
-let items = [], category = 'all', savedOnly = false, currentItem = null, installPrompt = null;
+let threads = [], items = [], category = 'all', savedOnly = false, currentItem = null, installPrompt = null;
 let saved = new Set(), triggerElement = null, touchStart = null;
 let authorFilter = '';
 // A reload starts on the feed, without leaving a stale detail history entry.
@@ -124,6 +124,22 @@ function makeRow(item) {
   });
   return row;
 }
+function makeThreads() {
+  const box = el('section', 'threads');
+  box.append(el('h2', 'threads-title', '오늘의 연결고리'), el('p', 'threads-sub', '기사 하나로는 안 보이고, 묶어야 보이는 것'));
+  threads.forEach((t, i) => {
+    const d = el('details', 'thread'); if (i === 0) d.open = true;
+    const sum = el('summary', ''); sum.append(el('span', 'thread-kind', textValue(t.kind) || '연결'), document.createTextNode(textValue(t.title)));
+    d.append(sum, el('p', 'thread-thesis', textValue(t.thesis)));
+    if (textValue(t.question)) d.append(el('p', 'thread-q', '❓ ' + textValue(t.question)));
+    const list = el('div', 'thread-items');
+    (t.ids || []).map((id) => items.find((x) => x.id === id)).filter(Boolean).forEach((item) => {
+      const b = el('button', 'thread-item', displayTitle(item)); b.type = 'button'; b.addEventListener('click', () => openDetail(item, b)); list.append(b);
+    });
+    d.append(list); box.append(d);
+  });
+  return box;
+}
 function renderFeed() {
   syncAuthorChips();
   const query = $('query').value.trim().toLocaleLowerCase('ko');
@@ -134,6 +150,7 @@ function renderFeed() {
   $('feed-label').textContent = `${savedOnly ? '저장한 기사' : '전체 기사'}${category !== 'all' ? ` · ${CATEGORIES[category]}` : ''}${query ? ' · 검색 결과' : ''}`;
   $('count').textContent = `${visible.length}개 · 최신순`;
   const fragment = document.createDocumentFragment();
+  if (category === 'all' && !query && !savedOnly && threads.length) fragment.append(makeThreads());
   let lastDate = null;
   visible.forEach((item) => {
     if (item.date !== lastDate) { fragment.append(el('h2', 'date-divider', dateLabel(item.date))); lastDate = item.date; }
@@ -245,7 +262,10 @@ function populateDetail(item) {
     block.append(list); content.append(block);
   } else appendSection(essay ? '곱씹어 볼 질문·행동' : '이렇게 하세요', essay ? item.steps || item.apply : item.apply, 'steps-section');
   appendSection(essay ? '글 속 대표 사례' : '숫자 예시', item.example, 'example-section');
+  appendSection('통념 뒤집기', item.twist, 'twist-section');
   appendSection('한 차원 높은 시각', item.insight);
+  appendSection('다른 분야와 연결', item.connect);
+  appendSection(essay ? '내 상황에 적용하면' : '두 사람에게 적용하면', item.scenario, 'example-section');
   appendSection(essay ? '읽을 때 주의' : '주의', item.caution, 'caution-section');
   if (Array.isArray(item.sources)) {
     const links = item.sources.map((source) => source && externalLink(textValue(source.name) || '출처 보기 ↗', source.url)).filter(Boolean);
@@ -343,7 +363,7 @@ async function loadData() {
     try { response = await fetch(DATA_URL, { cache: 'no-store', signal: controller.signal }); }
     finally { clearTimeout(timer); }
     if (!response.ok) throw new Error('Network response');
-    items = readItems(await response.clone().json());
+    { const j = await response.clone().json(); items = readItems(j); threads = Array.isArray(j?.threads?.items) ? j.threads.items : []; }
     offline = response.headers.get('X-Money-Master-Cache') === '1';
     if ('caches' in window && !offline) {
       try { const cache = await caches.open(CACHE_NAME); await cache.put(DATA_URL, response); } catch { /* Caching is optional. */ }
@@ -352,7 +372,7 @@ async function loadData() {
     try {
       const cached = 'caches' in window ? await caches.match(DATA_URL) : null;
       if (!cached) throw new Error('No cache');
-      items = readItems(await cached.json()); offline = true;
+      { const j = await cached.json(); items = readItems(j); threads = Array.isArray(j?.threads?.items) ? j.threads.items : []; offline = true; }
     } catch {
       $('status').replaceChildren(document.createTextNode('기사를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요. '));
       const retry = el('button', '', '다시 시도'); retry.type = 'button'; retry.addEventListener('click', () => { $('status').textContent = '기사를 불러오는 중입니다…'; loadData(); }); $('status').append(retry);

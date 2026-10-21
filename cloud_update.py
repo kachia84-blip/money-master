@@ -36,11 +36,24 @@ def api_pick(n, chunk):
                 du.log(f"chunk {n} {model} 실패: {repr(e)[:150]}"); time.sleep(10)
     return []
 
+def api_synth(prompt):
+    for model in MODELS:
+        body = json.dumps({"contents": [{"parts": [{"text": prompt}]}], "generationConfig": {"temperature": 0.7}}).encode()
+        try:
+            req = urllib.request.Request(f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent", body,
+                                         {"Content-Type": "application/json", "x-goog-api-key": KEY})
+            r = json.load(urllib.request.urlopen(req, timeout=300))
+            text = "".join(p.get("text", "") for p in r["candidates"][0]["content"]["parts"])
+            return json.loads(text[text.index("{"): text.rindex("}") + 1])
+        except Exception as e:
+            du.log(f"연결고리 {model} 실패: {repr(e)[:120]}")
+    return None
+
 if __name__ == "__main__":
     if not KEY:
         du.log("GEMINI_API_KEY 환경변수가 비어 있음(비밀값 이름/등록 확인 필요)"); print("GEMINI_API_KEY 없음"); sys.exit(0)
     du.log(f"서버 실행 시작 모델={MODEL}")
     try:
-        du.run(api_pick, workers=1)
+        du.run(api_pick, workers=1, synth=api_synth)
     except Exception as e:
         du.log("오류: " + repr(e)[:300])
