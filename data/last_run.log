@@ -335,3 +335,13 @@
 2026-10-25 23:23:06 chunk 1 성공 모델=gemini-flash-lite-latest 0개
 2026-10-25 23:26:06 연결고리 3개
 2026-10-25 23:26:06 3개 추가, 총 459개
+2026-10-26 05:02:27 서버 실행 시작 모델=gemini-flash-latest
+2026-10-26 05:02:41 새 후보 뉴스 1건·에세이 2건, 묶음 2개
+2026-10-26 05:07:16 chunk 0 gemini-flash-latest 실패: RemoteDisconnected('Remote end closed connection without response')
+2026-10-26 05:08:05 chunk 0 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-10-26 05:08:09 chunk 0 성공 모델=gemini-flash-lite-latest 1개
+2026-10-26 05:12:44 chunk 1 gemini-flash-latest 실패: RemoteDisconnected('Remote end closed connection without response')
+2026-10-26 05:15:46 chunk 1 성공 모델=gemini-flash-latest 1개
+2026-10-26 05:16:29 연결고리 gemini-flash-latest 실패: <HTTPError 503: 'Service Unavailable'>
+2026-10-26 05:16:33 연결고리 3개
+2026-10-26 05:16:33 2개 추가, 총 460개
