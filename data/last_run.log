@@ -345,3 +345,13 @@
 2026-10-26 05:16:29 연결고리 gemini-flash-latest 실패: <HTTPError 503: 'Service Unavailable'>
 2026-10-26 05:16:33 연결고리 3개
 2026-10-26 05:16:33 2개 추가, 총 460개
+2026-10-26 13:21:06 서버 실행 시작 모델=gemini-flash-latest
+2026-10-26 13:21:18 새 후보 뉴스 10건·에세이 6건, 묶음 2개
+2026-10-26 13:25:51 chunk 0 gemini-flash-latest 실패: RemoteDisconnected('Remote end closed connection without response')
+2026-10-26 13:31:02 chunk 0 gemini-flash-latest 실패: TimeoutError('The read operation timed out')
+2026-10-26 13:31:52 chunk 0 성공 모델=gemini-flash-lite-latest 10개
+2026-10-26 13:32:00 chunk 1 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-10-26 13:32:31 chunk 1 성공 모델=gemini-flash-lite-latest 6개
+2026-10-26 13:32:34 연결고리 gemini-flash-latest 실패: <HTTPError 503: 'Service Unavailable'>
+2026-10-26 13:32:59 연결고리 3개
+2026-10-26 13:32:59 16개 추가, 총 476개
