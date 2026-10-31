@@ -7,7 +7,8 @@ import socket; socket.setdefaulttimeout(30)
 
 KEY = os.environ.get("GEMINI_API_KEY", "")
 MODEL = os.environ.get("GEMINI_MODEL", "gemini-flash-latest")
-MODELS = [MODEL, "gemini-flash-lite-latest", "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]
+# 2.x 모델은 새 사용자에게 404라 뺌(2026-10-31 로그). 같은 모델이 겹치면 한 번만 시도
+MODELS = list(dict.fromkeys([MODEL, "gemini-3.7-flash", "gemini-flash-lite-latest", "gemini-3.5-flash"]))
 
 def api_pick(n, chunk):
     cands = [{"idx": i, **{k: c[k] for k in ("title", "source", "date", "snippet")}} for i, c in enumerate(chunk)]
