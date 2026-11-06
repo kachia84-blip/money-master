@@ -230,7 +230,7 @@ function populateDetail(item) {
   const title = el('h1', '', displayTitle(item)); title.id = 'detail-title'; content.append(title);
   if (essay) content.append(el('p', 'detail-original-title', item.title));
   content.append(el('p', 'detail-meta', `${essay ? essayByline(item) : sourceName(item)} · ${item.date || '날짜 미상'}`));
-  const original = externalLink(essay ? '원문 읽기 (영어)' : '원문 기사 보기 ↗', item.url, 'primary-button'); if (original) content.append(original);
+  const original = externalLink(essay ? (item.lang === 'ko' ? '원문 읽기' : '원문 읽기 (영어)') : '원문 기사 보기 ↗', item.url, 'primary-button'); if (original) content.append(original);
   const appendSection = (name, value, className) => { const block = section(name, value, className); if (block) content.append(block); };
   appendSection(essay ? '핵심 주장' : '한 줄 인사이트', item.oneliner, 'insight-section');
   appendSection('무슨 일인가', item.summary);

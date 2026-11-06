@@ -13,7 +13,9 @@ FEEDS = {  # 표시 이름: 피드 주소
     "Noah Smith": "https://www.noahpinion.blog/feed", "Packy McCormick": "https://www.notboring.co/feed", "Humble Dollar": "https://humbledollar.com/feed/",
     "Mr. Money Mustache": "https://www.mrmoneymustache.com/feed/", "Early Retirement Now": "https://earlyretirementnow.com/feed/", "Tim Ferriss": "https://tim.blog/feed/",
     "Bogleheads": "https://www.bogleheads.org/blog/feed/", "Safal Niveshak": "https://www.safalniveshak.com/feed/", "Brad Feld": "https://feld.com/feed",
+    "메르": "https://rss.blog.naver.com/ranto28.xml",
 }
+KO = {"메르": 8}  # 한국어 필자: 이름 → 피드당 최대 글 수
 DAYS, PER_FEED, TEXT = 120, 6, 1800
 
 def clean(s):
@@ -40,10 +42,10 @@ def main():
             body = t.get("encoded") or t.get("content") or t.get("description") or t.get("summary") or ""
             img = re.search(r'<img[^>]+src="(https?://[^"]+)"', body)
             if re.search(r"(reads|links|podcast|weekly|roundup|newsletter)|sponsor", t.get("title", ""), re.I): continue
-            if (now - dt).days > DAYS or not t.get("link") or not t.get("title") or n >= PER_FEED or len(clean(body)) < 200: continue
+            if (now - dt).days > DAYS or not t.get("link") or not t.get("title") or n >= KO.get(name, PER_FEED) or len(clean(body)) < 200: continue
             n += 1
-            out.append({"title": clean(t["title"]), "url": t["link"].strip(), "date": dt.date().isoformat(), "source": name,
-                        "snippet": clean(body)[:TEXT], "image": img.group(1) if img else "", "hint": "essay", "lang": "en"})
+            out.append({"title": clean(t["title"]), "url": t["link"].strip().split("?")[0], "date": dt.date().isoformat(), "source": name,
+                        "snippet": clean(body)[:TEXT], "image": img.group(1) if img else "", "hint": "essay", "lang": "ko" if name in KO else "en"})
     out.sort(key=lambda x: x["date"], reverse=True)
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(len(out), "건 에세이 후보")
