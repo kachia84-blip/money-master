@@ -801,3 +801,11 @@
 2026-11-07 10:37:13 chunk 2 성공 모델=gemini-3.7-flash 9개
 2026-11-07 10:39:32 연결고리 3개
 2026-11-07 10:39:32 15개 추가, 총 600개
+2026-11-07 17:47:15 서버 실행 시작 모델=gemini-flash-latest
+2026-11-07 17:47:29 새 후보 뉴스 1건·에세이 39건, 묶음 3개
+2026-11-07 17:49:13 chunk 0 성공 모델=gemini-flash-latest 1개
+2026-11-07 17:54:07 chunk 1 성공 모델=gemini-flash-latest 9개
+2026-11-07 17:58:05 chunk 2 성공 모델=gemini-flash-latest 9개
+2026-11-07 18:03:05 연결고리 gemini-flash-latest 실패: TimeoutError('The read operation timed out')
+2026-11-07 18:05:18 연결고리 3개
+2026-11-07 18:05:18 19개 추가, 총 600개
