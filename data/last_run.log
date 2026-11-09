@@ -865,3 +865,23 @@
 2026-11-08 20:04:49 chunk 2 성공 모델=gemini-3.7-flash 4개
 2026-11-08 20:08:46 연결고리 3개
 2026-11-08 20:08:46 18개 추가, 총 600개
+2026-11-09 01:02:18 서버 실행 시작 모델=gemini-flash-latest
+2026-11-09 01:02:32 새 후보 뉴스 4건·에세이 41건, 묶음 3개
+2026-11-09 01:07:32 chunk 0 gemini-flash-latest 실패: TimeoutError('The read operation timed out')
+2026-11-09 01:12:42 chunk 0 gemini-flash-latest 실패: TimeoutError('The read operation timed out')
+2026-11-09 01:12:56 chunk 0 gemini-3.7-flash HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-09 01:13:09 chunk 0 성공 모델=gemini-flash-lite-latest 4개
+2026-11-09 01:13:09 chunk 1 gemini-flash-latest HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-09 01:13:34 chunk 1 gemini-flash-latest HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-09 01:13:59 chunk 1 gemini-3.7-flash HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-09 01:14:24 chunk 1 gemini-3.7-flash HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-09 01:15:02 chunk 1 성공 모델=gemini-flash-lite-latest 3개
+2026-11-09 01:15:02 chunk 2 gemini-flash-latest HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-09 01:15:28 chunk 2 gemini-flash-latest HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-09 01:15:53 chunk 2 gemini-3.7-flash HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-09 01:16:18 chunk 2 gemini-3.7-flash HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-09 01:17:10 chunk 2 성공 모델=gemini-flash-lite-latest 9개
+2026-11-09 01:17:10 연결고리 gemini-flash-latest 실패: <HTTPError 429: 'Too Many Requests'>
+2026-11-09 01:17:10 연결고리 gemini-3.7-flash 실패: <HTTPError 429: 'Too Many Requests'>
+2026-11-09 01:17:14 연결고리 3개
+2026-11-09 01:17:14 16개 추가, 총 600개
