@@ -897,3 +897,18 @@
 2026-11-09 12:07:59 연결고리 gemini-3.7-flash 실패: <HTTPError 503: 'Service Unavailable'>
 2026-11-09 12:08:02 연결고리 3개
 2026-11-09 12:08:02 30개 추가, 총 600개
+2026-11-09 22:33:38 서버 실행 시작 모델=gemini-flash-latest
+2026-11-09 22:33:52 새 후보 뉴스 10건·에세이 39건, 묶음 3개
+2026-11-09 22:38:53 chunk 0 gemini-flash-latest 실패: TimeoutError('The read operation timed out')
+2026-11-09 22:39:05 chunk 0 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-09 22:39:07 chunk 0 gemini-3.7-flash HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-09 22:39:33 chunk 0 gemini-flash-lite-latest 실패: JSONDecodeError('Expecting property name enclosed in double quotes: line 116 column 5 (char 5007)')
+2026-11-09 22:40:11 chunk 0 gemini-flash-lite-latest 실패: JSONDecodeError('Expecting property name enclosed in double quotes: line 257 column 5 (char 11053)')
+2026-11-09 22:40:53 chunk 0 gemini-3.5-flash HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-09 22:45:53 chunk 1 gemini-flash-latest 실패: TimeoutError('The read operation timed out')
+2026-11-09 22:51:03 chunk 1 gemini-flash-latest 실패: TimeoutError('The read operation timed out')
+2026-11-09 22:51:13 chunk 1 gemini-3.7-flash HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-09 22:51:38 chunk 1 성공 모델=gemini-flash-lite-latest 7개
+2026-11-09 22:56:28 chunk 2 성공 모델=gemini-flash-latest 9개
+2026-11-09 23:00:40 연결고리 3개
+2026-11-09 23:00:40 16개 추가, 총 600개
