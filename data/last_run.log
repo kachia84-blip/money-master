@@ -1179,3 +1179,18 @@
 2026-11-15 16:36:13 chunk 2 성공 모델=gemini-flash-latest 9개
 2026-11-15 16:41:09 연결고리 3개
 2026-11-15 16:41:09 23개 추가, 총 600개
+2026-11-15 23:00:05 서버 실행 시작 모델=gemini-flash-latest
+2026-11-15 23:00:18 새 후보 뉴스 5건·에세이 36건, 묶음 3개
+2026-11-15 23:03:04 chunk 0 성공 모델=gemini-flash-latest 3개
+2026-11-15 23:03:04 chunk 1 gemini-flash-latest HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-15 23:03:30 chunk 1 gemini-flash-latest HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-15 23:03:55 chunk 1 gemini-3.7-flash HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-15 23:07:00 chunk 1 성공 모델=gemini-3.7-flash 9개
+2026-11-15 23:07:00 chunk 2 gemini-flash-latest HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-15 23:07:25 chunk 2 gemini-flash-latest HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-15 23:07:50 chunk 2 gemini-3.7-flash HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-15 23:10:59 chunk 2 성공 모델=gemini-3.7-flash 9개
+2026-11-15 23:10:59 연결고리 gemini-flash-latest 실패: <HTTPError 429: 'Too Many Requests'>
+2026-11-15 23:10:59 연결고리 gemini-3.7-flash 실패: <HTTPError 429: 'Too Many Requests'>
+2026-11-15 23:11:03 연결고리 3개
+2026-11-15 23:11:03 21개 추가, 총 600개
