@@ -1234,3 +1234,12 @@
 2026-11-16 20:05:51 연결고리 gemini-3.7-flash 실패: <HTTPError 429: 'Too Many Requests'>
 2026-11-16 20:05:55 연결고리 3개
 2026-11-16 20:05:55 20개 추가, 총 600개
+2026-11-17 04:01:06 서버 실행 시작 모델=gemini-flash-latest
+2026-11-17 04:01:18 새 후보 뉴스 11건·에세이 35건, 묶음 3개
+2026-11-17 04:02:41 chunk 0 성공 모델=gemini-flash-latest 7개
+2026-11-17 04:04:09 chunk 1 성공 모델=gemini-flash-latest 9개
+2026-11-17 04:05:50 chunk 2 성공 모델=gemini-flash-latest 9개
+2026-11-17 04:05:50 연결고리 gemini-flash-latest 실패: <HTTPError 429: 'Too Many Requests'>
+2026-11-17 04:05:54 연결고리 gemini-3.7-flash 실패: <HTTPError 503: 'Service Unavailable'>
+2026-11-17 04:06:03 연결고리 3개
+2026-11-17 04:06:03 25개 추가, 총 600개
