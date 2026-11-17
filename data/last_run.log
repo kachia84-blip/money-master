@@ -1243,3 +1243,21 @@
 2026-11-17 04:05:54 연결고리 gemini-3.7-flash 실패: <HTTPError 503: 'Service Unavailable'>
 2026-11-17 04:06:03 연결고리 3개
 2026-11-17 04:06:03 25개 추가, 총 600개
+2026-11-17 16:17:07 서버 실행 시작 모델=gemini-flash-latest
+2026-11-17 16:17:19 새 후보 뉴스 9건·에세이 38건, 묶음 3개
+2026-11-17 16:18:32 chunk 0 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-17 16:18:35 chunk 0 gemini-3.7-flash HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-17 16:18:41 chunk 0 gemini-flash-lite-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-17 16:21:34 chunk 0 성공 모델=gemini-3.5-flash 5개
+2026-11-17 16:21:36 chunk 1 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-17 16:21:39 chunk 1 gemini-3.7-flash HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-17 16:21:54 chunk 1 gemini-flash-lite-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-17 16:24:11 chunk 1 성공 모델=gemini-3.5-flash 9개
+2026-11-17 16:24:11 chunk 2 gemini-flash-latest HTTP 429: {   "error": {     "code": 429,     "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To m
+2026-11-17 16:26:38 chunk 2 성공 모델=gemini-flash-latest 9개
+2026-11-17 16:26:49 연결고리 gemini-flash-latest 실패: <HTTPError 503: 'Service Unavailable'>
+2026-11-17 16:26:49 연결고리 gemini-3.7-flash 실패: <HTTPError 429: 'Too Many Requests'>
+2026-11-17 16:26:58 연결고리 gemini-flash-lite-latest 실패: <HTTPError 503: 'Service Unavailable'>
+2026-11-17 16:29:06 연결고리 gemini-3.5-flash 실패: <HTTPError 503: 'Service Unavailable'>
+2026-11-17 16:29:06 연결고리 생성 실패(기존 유지)
+2026-11-17 16:29:06 23개 추가, 총 600개
