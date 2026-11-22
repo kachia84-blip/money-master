@@ -1486,3 +1486,19 @@
 2026-11-22 11:58:14 연결고리 gemini-flash-lite-latest 실패: <HTTPError 503: 'Service Unavailable'>
 2026-11-22 11:59:16 연결고리 3개
 2026-11-22 11:59:16 30개 추가, 총 600개
+2026-11-22 19:52:17 서버 실행 시작 모델=gemini-flash-latest
+2026-11-22 19:52:28 새 후보 뉴스 3건·에세이 37건, 묶음 3개
+2026-11-22 19:52:31 chunk 0 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-22 19:52:37 chunk 0 gemini-3.7-flash HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-22 19:52:41 chunk 0 성공 모델=gemini-flash-lite-latest 1개
+2026-11-22 19:52:43 chunk 1 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-22 19:52:45 chunk 1 gemini-3.7-flash HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-22 19:53:18 chunk 1 성공 모델=gemini-flash-lite-latest 9개
+2026-11-22 19:53:21 chunk 2 gemini-flash-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-22 19:53:58 chunk 2 gemini-3.7-flash HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-22 19:54:07 chunk 2 gemini-flash-lite-latest HTTP 503: {   "error": {     "code": 503,     "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",     "status": "UNAVAILABLE"   } } 
+2026-11-22 19:56:21 chunk 2 성공 모델=gemini-3.5-flash 9개
+2026-11-22 19:56:23 연결고리 gemini-flash-latest 실패: <HTTPError 503: 'Service Unavailable'>
+2026-11-22 19:56:36 연결고리 gemini-3.7-flash 실패: <HTTPError 503: 'Service Unavailable'>
+2026-11-22 19:56:43 연결고리 3개
+2026-11-22 19:56:43 19개 추가, 총 600개
