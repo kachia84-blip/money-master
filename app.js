@@ -341,7 +341,8 @@ $('install-button').addEventListener('click', async () => {
   try { await prompt.prompt(); await prompt.userChoice; } catch { $('install-sheet').showModal(); }
   syncInstall();
 });
-$('install-sheet').addEventListener('click', (event) => {
+$('install-sheet').setAttribute('closedby', 'any');
+if (!('closedBy' in HTMLDialogElement.prototype)) $('install-sheet').addEventListener('click', (event) => {
   if (event.target !== $('install-sheet')) return;
   const box = $('install-sheet').getBoundingClientRect();
   if (event.clientY < box.top || event.clientX < box.left || event.clientX > box.right) $('install-sheet').close();
